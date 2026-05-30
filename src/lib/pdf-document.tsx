@@ -273,7 +273,13 @@ function CoverPage({ report }: { report: AnalysisReport }) {
           </View>
           <View style={S.statBox}>
             <Text style={S.statLabel}>Est. Total ROI</Text>
-            <Text style={[S.statValue, { fontSize: 14, color: C.primary }]}>{aiRoadmap.totalEstimatedROI || 'See report'}</Text>
+            <Text style={[S.statValue, { fontSize: 11, color: C.primary, lineHeight: 1.3 }]}>
+              {aiRoadmap.totalEstimatedROI
+                ? (aiRoadmap.totalEstimatedROI.indexOf(':') > -1
+                    ? aiRoadmap.totalEstimatedROI.slice(0, aiRoadmap.totalEstimatedROI.indexOf(':')).trim()
+                    : aiRoadmap.totalEstimatedROI.slice(0, 40))
+                : 'See report'}
+            </Text>
             <Text style={S.statSub}>Full implementation</Text>
           </View>
         </View>
@@ -513,20 +519,12 @@ function RoadmapPage({ report }: { report: AnalysisReport }) {
           <Text style={S.sectionDesc}>{aiRoadmap.executiveSummary}</Text>
         </View>
 
-        {aiRoadmap.totalEstimatedROI && (() => {
-          const colonIdx = aiRoadmap.totalEstimatedROI.indexOf(':');
-          const headline = colonIdx > -1 ? aiRoadmap.totalEstimatedROI.slice(0, colonIdx).trim() : null;
-          const detail   = colonIdx > -1 ? aiRoadmap.totalEstimatedROI.slice(colonIdx + 1).trim() : aiRoadmap.totalEstimatedROI;
-          return (
-            <View style={[S.highlightBox, { marginBottom: 16, backgroundColor: '#F0FDF4', borderColor: '#BBF7D0' }]}>
-              <Text style={[S.highlightLabel, { color: '#166534' }]}>Total Estimated ROI — Full Implementation</Text>
-              {headline && (
-                <Text style={[S.highlightText, { color: C.primary, fontSize: 13, marginBottom: 5 }]}>{headline}</Text>
-              )}
-              <Text style={[S.tableCell, { lineHeight: 1.5, color: '#374151' }]}>{detail}</Text>
-            </View>
-          );
-        })()}
+        {aiRoadmap.totalEstimatedROI && (
+          <View style={[S.highlightBox, { marginBottom: 16, backgroundColor: '#F0FDF4', borderColor: '#BBF7D0' }]}>
+            <Text style={[S.highlightLabel, { color: '#166534' }]}>Total Estimated ROI — Full Implementation</Text>
+            <Text style={[S.tableCell, { lineHeight: 1.5, color: '#374151' }]}>{aiRoadmap.totalEstimatedROI}</Text>
+          </View>
+        )}
 
         {phases.map(({ data, num, color, bg, border, textColor }) => {
           if (!data?.opportunities?.length) return null;

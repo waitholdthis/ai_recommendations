@@ -235,11 +235,6 @@ function KPICard({ label, value, suffix, color, sub, onClick, delay }: {
 }
 
 function ROICallout({ roi, onViewRoadmap }: { roi: string; onViewRoadmap: () => void }) {
-  // Split on the first colon so we can bold the headline (e.g. "350–700% over 18 months")
-  const colonIdx = roi.indexOf(':');
-  const headline = colonIdx > -1 ? roi.slice(0, colonIdx).trim() : null;
-  const detail   = colonIdx > -1 ? roi.slice(colonIdx + 1).trim() : roi;
-
   return (
     <div className="mt-4 p-5 rounded-2xl"
       style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(167,139,250,0.05))', border: '1px solid rgba(99,102,241,0.2)' }}>
@@ -251,10 +246,7 @@ function ROICallout({ roi, onViewRoadmap }: { roi: string; onViewRoadmap: () => 
             </svg>
             <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: '#45455F' }}>Total Estimated ROI</p>
           </div>
-          {headline && (
-            <p className="text-base font-black tracking-tight mb-1.5 gradient-text-primary">{headline}</p>
-          )}
-          <p className="text-sm leading-relaxed" style={{ color: '#9090B0' }}>{detail}</p>
+          <p className="text-sm leading-relaxed break-words" style={{ color: '#9090B0' }}>{roi}</p>
         </div>
         <button onClick={onViewRoadmap} className="btn-primary px-5 py-2.5 text-sm flex-shrink-0">
           View Roadmap →

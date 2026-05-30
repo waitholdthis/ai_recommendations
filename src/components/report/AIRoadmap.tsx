@@ -87,9 +87,6 @@ export function AIRoadmapSection({ roadmap }: { roadmap: AIRoadmap }) {
 }
 
 function ROIBlock({ roi }: { roi: string }) {
-  const colonIdx = roi.indexOf(':');
-  const headline = colonIdx > -1 ? roi.slice(0, colonIdx).trim() : null;
-  const detail   = colonIdx > -1 ? roi.slice(colonIdx + 1).trim() : roi;
   return (
     <div className="p-4 rounded-xl" style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.2)' }}>
       <div className="flex items-center gap-2 mb-2">
@@ -98,10 +95,7 @@ function ROIBlock({ roi }: { roi: string }) {
         </svg>
         <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: '#16A34A' }}>Total Estimated ROI</p>
       </div>
-      {headline && (
-        <p className="text-base font-black tracking-tight gradient-text-primary mb-1">{headline}</p>
-      )}
-      <p className="text-sm leading-relaxed" style={{ color: '#9090B0' }}>{detail}</p>
+      <p className="text-sm leading-relaxed break-words" style={{ color: '#9090B0' }}>{roi}</p>
     </div>
   );
 }

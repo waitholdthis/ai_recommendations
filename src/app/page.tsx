@@ -67,6 +67,7 @@ export default function HomePage() {
     setProgress(null);
     setReport(null);
     setErrorMessage('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   return (
@@ -87,7 +88,7 @@ export default function HomePage() {
         </motion.div>
       )}
       {appState === 'complete' && report && (
-        <motion.div key="report" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <motion.div key="report" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
           <ReportViewer report={report} onReset={handleReset} />
         </motion.div>
       )}
