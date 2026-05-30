@@ -4,6 +4,7 @@ export interface ScrapedData {
   metaDescription: string;
   h1Tags: string[];
   h2Tags: string[];
+  h3Tags: string[];
   ctaTexts: string[];
   navItems: string[];
   colorPalette: string[];
@@ -23,27 +24,59 @@ export interface ScrapedData {
   externalLinks: number;
   hasSSL: boolean;
   mobileViewport: boolean;
+  // enriched signals
+  formCount: number;
+  videoCount: number;
+  hasHeroVideo: boolean;
+  imageCount: number;
+  testimonialCount: number;
+  hasReviewWidget: boolean;
+  hasPricingPage: boolean;
+  hasFreeTrialOrDemo: boolean;
+  hasCaseStudies: boolean;
+  hasNewsletterSignup: boolean;
+  hasPressLogos: boolean;
+  socialMediaLinks: string[];
+  hasSocialProofSection: boolean;
+  hasAwardsBadges: boolean;
+  hasStickyNav: boolean;
+  paragraphTexts: string[];
+  imagesWithAltCount: number;
 }
 
 export interface BusinessClassification {
   industry: string;
   subIndustry: string;
-  businessModel: 'B2B' | 'B2C' | 'B2B2C' | 'Marketplace' | 'SaaS' | 'Other';
+  businessModel: 'B2B' | 'B2C' | 'B2B2C' | 'Marketplace' | 'SaaS' | 'DTC' | 'Enterprise' | 'Other';
+  revenueModel: string;
   primaryAudience: string;
-  maturityStage: 'Early Stage' | 'Growth' | 'Established' | 'Enterprise';
+  secondaryAudience: string;
+  maturityStage: 'Pre-Revenue' | 'Early Stage' | 'Growth' | 'Established' | 'Enterprise';
+  marketPositioning: 'Premium / Luxury' | 'Mid-Market' | 'Value / Budget' | 'Niche Specialist' | 'Mass Market';
+  brandVoice: string;
   topPainPoints: string[];
+  customerJobsToBeDone: string[];
   competitiveAdvantages: string[];
+  competitiveMoat: string;
   currentTechStack: string[];
+  missingTechSignals: string[];
   aiReadinessScore: number;
+  digitalMaturityScore: number;
+  growthSignals: string[];
+  keyConversionBarriers: string[];
 }
 
 export interface CROIssue {
   id: string;
-  category: 'Hero' | 'Navigation' | 'CTA' | 'Social Proof' | 'Forms' | 'Mobile' | 'Speed' | 'Trust' | 'Content' | 'Design';
+  category: 'Hero' | 'Navigation' | 'CTA' | 'Social Proof' | 'Forms' | 'Mobile' | 'Speed' | 'Trust' | 'Content' | 'Design' | 'Accessibility' | 'SEO' | 'Brand' | 'Copy' | 'Pricing' | 'Video' | 'Personalization';
   severity: 'Critical' | 'High' | 'Medium' | 'Low';
   title: string;
   description: string;
+  screenshotObservation: string;
   recommendation: string;
+  specificCopySuggestion?: string;
+  abTestHypothesis: string;
+  benchmarkComparison: string;
   estimatedImpact: 'High' | 'Medium' | 'Low';
   effort: 'High' | 'Medium' | 'Low';
   conversionLift: string;
@@ -58,6 +91,13 @@ export interface CROAudit {
   mobileScore: number;
   trustScore: number;
   contentScore: number;
+  accessibilityScore: number;
+  seoScore: number;
+  performanceScore: number;
+  brandConsistencyScore: number;
+  copyQualityScore: number;
+  valuePropositionScore: number;
+  executiveSummary: string;
   issues: CROIssue[];
   quickWins: string[];
   strengths: string[];
@@ -65,7 +105,7 @@ export interface CROAudit {
 
 export interface AIOpportunity {
   id: string;
-  category: 'Customer Support' | 'Sales & Lead Gen' | 'Marketing' | 'Operations' | 'Analytics' | 'Content' | 'Personalization' | 'Automation';
+  category: 'Customer Support' | 'Sales & Lead Gen' | 'Marketing' | 'Operations' | 'Analytics' | 'Content' | 'Personalization' | 'Automation' | 'Data & Intelligence' | 'Experience' | 'Revenue Operations';
   title: string;
   description: string;
   businessImpact: string;
@@ -76,6 +116,9 @@ export interface AIOpportunity {
   priority: 'Quick Win' | 'Strategic' | 'Transformative';
   tools: string[];
   successMetrics: string[];
+  buildVsBuy: string;
+  riskFactors: string[];
+  integrationRequirements: string[];
 }
 
 export interface AIRoadmap {

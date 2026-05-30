@@ -66,16 +66,21 @@ export function ExecutiveSummary({ report, onTabChange }: Props) {
               </button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
-              {[
+              {([
+                ['Value Proposition', croAudit.valuePropositionScore],
                 ['Hero Section', croAudit.heroScore],
-                ['Navigation', croAudit.navigationScore],
                 ['Call-to-Action', croAudit.ctaScore],
                 ['Social Proof', croAudit.socialProofScore],
-                ['Mobile UX', croAudit.mobileScore],
+                ['Copy Quality', croAudit.copyQualityScore],
                 ['Trust Signals', croAudit.trustScore],
                 ['Content Quality', croAudit.contentScore],
-              ].map(([label, score]) => (
-                <DimBar key={label as string} label={label as string} score={score as number} />
+                ['Navigation', croAudit.navigationScore],
+                ['Mobile UX', croAudit.mobileScore],
+                ['Brand Consistency', croAudit.brandConsistencyScore],
+                ['Accessibility', croAudit.accessibilityScore],
+                ['SEO Structure', croAudit.seoScore],
+              ] as [string, number][]).filter(([, s]) => s != null).map(([label, score]) => (
+                <DimBar key={label} label={label} score={score} />
               ))}
             </div>
           </div>
@@ -88,27 +93,62 @@ export function ExecutiveSummary({ report, onTabChange }: Props) {
           <div className="card p-5">
             <h3 className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: '#45455F' }}>Business Profile</h3>
             <div className="space-y-3">
-              {[
+              {([
                 ['Industry', cls.industry],
                 ['Sub-industry', cls.subIndustry],
                 ['Model', cls.businessModel],
+                cls.revenueModel ? ['Revenue Model', cls.revenueModel] : null,
                 ['Audience', cls.primaryAudience],
+                cls.secondaryAudience ? ['Secondary', cls.secondaryAudience] : null,
                 ['Stage', cls.maturityStage],
-              ].map(([k, v]) => (
+                cls.marketPositioning ? ['Positioning', cls.marketPositioning] : null,
+              ] as ([string, string] | null)[]).filter((x): x is [string, string] => x !== null).map(([k, v]) => (
                 <div key={k} className="flex items-start justify-between gap-3">
                   <span className="text-xs flex-shrink-0" style={{ color: '#45455F' }}>{k}</span>
                   <span className="text-xs font-medium text-right" style={{ color: '#9090B0' }}>{v}</span>
                 </div>
               ))}
             </div>
+
+            {cls.brandVoice && (
+              <>
+                <div className="divider my-4" />
+                <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#45455F' }}>Brand Voice</p>
+                <p className="text-xs leading-relaxed" style={{ color: '#9090B0' }}>{cls.brandVoice}</p>
+              </>
+            )}
+
+            {cls.competitiveMoat && (
+              <>
+                <div className="divider my-4" />
+                <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#45455F' }}>Competitive Moat</p>
+                <p className="text-xs leading-relaxed" style={{ color: '#9090B0' }}>{cls.competitiveMoat}</p>
+              </>
+            )}
+
             {cls.currentTechStack.length > 0 && (
               <>
                 <div className="divider my-4" />
-                <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#45455F' }}>Tech Stack</p>
+                <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#45455F' }}>Tech Stack Detected</p>
                 <div className="flex flex-wrap gap-1.5">
-                  {cls.currentTechStack.slice(0, 8).map(t => (
+                  {cls.currentTechStack.slice(0, 10).map(t => (
                     <span key={t} className="text-xs px-2 py-0.5 rounded-md font-mono"
                       style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', color: '#9090B0' }}>
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {cls.missingTechSignals && cls.missingTechSignals.length > 0 && (
+              <>
+                <div className="divider my-4" />
+                <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#45455F' }}>Tech Gaps</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {cls.missingTechSignals.slice(0, 6).map(t => (
+                    <span key={t} className="text-xs px-2 py-0.5 rounded-md font-mono"
+                      style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)', color: '#F87171' }}>
                       {t}
                     </span>
                   ))}
@@ -130,6 +170,15 @@ export function ExecutiveSummary({ report, onTabChange }: Props) {
                 <ScoreGauge score={cls.aiReadinessScore} size="md" showLabel />
                 <p className="text-xs mt-2" style={{ color: '#45455F' }}>AI Ready</p>
               </div>
+              {cls.digitalMaturityScore != null && (
+                <>
+                  <div className="w-px self-stretch" style={{ background: 'rgba(255,255,255,0.05)' }} />
+                  <div className="text-center">
+                    <ScoreGauge score={cls.digitalMaturityScore} size="md" showLabel />
+                    <p className="text-xs mt-2" style={{ color: '#45455F' }}>Digital</p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
@@ -164,6 +213,36 @@ export function ExecutiveSummary({ report, onTabChange }: Props) {
                 </li>
               ))}
             </ul>
+
+            {cls.keyConversionBarriers && cls.keyConversionBarriers.length > 0 && (
+              <>
+                <div className="divider my-4" />
+                <h3 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#45455F' }}>Conversion Barriers</h3>
+                <ul className="space-y-2">
+                  {cls.keyConversionBarriers.map((b, i) => (
+                    <li key={i} className="flex items-start gap-2 text-xs">
+                      <span style={{ color: '#EF4444', marginTop: 2 }}>✕</span>
+                      <span style={{ color: '#9090B0' }}>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {cls.customerJobsToBeDone && cls.customerJobsToBeDone.length > 0 && (
+              <>
+                <div className="divider my-4" />
+                <h3 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#45455F' }}>Jobs to Be Done</h3>
+                <ul className="space-y-2.5">
+                  {cls.customerJobsToBeDone.map((j, i) => (
+                    <li key={i} className="flex items-start gap-2 text-xs leading-relaxed">
+                      <span style={{ color: '#818CF8', marginTop: 2 }}>→</span>
+                      <span style={{ color: '#9090B0' }}>{j}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
           </div>
 
         </motion.div>

@@ -71,24 +71,24 @@ export default function HomePage() {
   }, []);
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="sync">
       {appState === 'idle' && (
-        <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
           <HeroPage onAnalyze={handleAnalyze} />
         </motion.div>
       )}
       {appState === 'loading' && progress && (
-        <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
           <LoadingState stage={progress.stage as ProgressStage} message={progress.message} progress={progress.progress} />
         </motion.div>
       )}
       {appState === 'error' && (
-        <motion.div key="error" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <motion.div key="error" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
           <ErrorPage message={errorMessage} onReset={handleReset} />
         </motion.div>
       )}
       {appState === 'complete' && report && (
-        <motion.div key="report" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <motion.div key="report" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
           <ReportViewer report={report} onReset={handleReset} />
         </motion.div>
       )}

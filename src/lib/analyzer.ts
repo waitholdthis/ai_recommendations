@@ -10,6 +10,7 @@ import {
   VISUAL_AUDIT_SYSTEM_PROMPT,
   ROADMAP_SYSTEM_PROMPT,
   buildClassificationPrompt,
+  buildVisualAuditPrompt,
   buildRoadmapPrompt,
 } from './prompts';
 
@@ -28,7 +29,7 @@ function parseJSON<T>(text: string, fallback: T): T {
       .trim();
     return JSON.parse(cleaned) as T;
   } catch {
-    console.error('JSON parse failed, raw:', text.slice(0, 200));
+    console.error('JSON parse failed, raw:', text.slice(0, 300));
     return fallback;
   }
 }
@@ -38,7 +39,7 @@ export async function classifyBusiness(
 ): Promise<BusinessClassification> {
   const stream = client.messages.stream({
     model: MODEL,
-    max_tokens: 1024,
+    max_tokens: 4096,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     thinking: { type: 'adaptive' } as any,
     system: [
@@ -64,64 +65,31 @@ export async function classifyBusiness(
     industry: 'Unknown',
     subIndustry: 'Unknown',
     businessModel: 'B2C',
+    revenueModel: 'Unknown',
     primaryAudience: 'General consumers',
+    secondaryAudience: 'Unknown',
     maturityStage: 'Established',
+    marketPositioning: 'Mid-Market',
+    brandVoice: 'Unknown',
     topPainPoints: ['Customer acquisition', 'Retention', 'Operational efficiency'],
+    customerJobsToBeDone: [],
     competitiveAdvantages: ['Existing brand presence'],
+    competitiveMoat: 'Unknown',
     currentTechStack: [],
+    missingTechSignals: [],
     aiReadinessScore: 40,
+    digitalMaturityScore: 40,
+    growthSignals: [],
+    keyConversionBarriers: [],
   });
 }
 
 export async function runVisualAudit(scrapedData: ScrapedData): Promise<CROAudit> {
-  const visualAuditPrompt = `Perform a comprehensive CRO audit of this website.
-
-URL: ${scrapedData.url}
-Title: ${scrapedData.title}
-H1: ${scrapedData.h1Tags.join(' | ')}
-CTAs found: ${scrapedData.ctaTexts.join(' | ')}
-Navigation: ${scrapedData.navItems.join(' | ')}
-Has Live Chat: ${scrapedData.hasLiveChat}
-Has Blog: ${scrapedData.hasBlog}
-Has Ecommerce: ${scrapedData.hasEcommerce}
-Load Time: ${scrapedData.loadTimeMs}ms
-SSL: ${scrapedData.hasSSL}
-Third-party tools: ${scrapedData.thirdPartyScripts.join(', ')}
-
-The attached screenshot shows the above-the-fold view (1440×900px).
-
-Return ONLY a valid JSON object with this exact structure (no markdown):
-{
-  "overallScore": number,
-  "heroScore": number,
-  "navigationScore": number,
-  "ctaScore": number,
-  "socialProofScore": number,
-  "mobileScore": number,
-  "trustScore": number,
-  "contentScore": number,
-  "issues": [
-    {
-      "id": "string",
-      "category": "Hero" | "Navigation" | "CTA" | "Social Proof" | "Forms" | "Mobile" | "Speed" | "Trust" | "Content" | "Design",
-      "severity": "Critical" | "High" | "Medium" | "Low",
-      "title": "string",
-      "description": "string",
-      "recommendation": "string",
-      "estimatedImpact": "High" | "Medium" | "Low",
-      "effort": "High" | "Medium" | "Low",
-      "conversionLift": "string (e.g. '15-25%')"
-    }
-  ],
-  "quickWins": ["string"],
-  "strengths": ["string"]
-}
-
-Provide 6-10 issues covering different categories. Be specific and actionable.`;
+  const visualAuditPrompt = buildVisualAuditPrompt(scrapedData);
 
   const stream = client.messages.stream({
     model: MODEL,
-    max_tokens: 4096,
+    max_tokens: 12000,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     thinking: { type: 'adaptive' } as any,
     system: [
@@ -165,6 +133,13 @@ Provide 6-10 issues covering different categories. Be specific and actionable.`;
     mobileScore: 60,
     trustScore: 50,
     contentScore: 50,
+    accessibilityScore: 50,
+    seoScore: 50,
+    performanceScore: 50,
+    brandConsistencyScore: 50,
+    copyQualityScore: 50,
+    valuePropositionScore: 50,
+    executiveSummary: 'CRO audit completed.',
     issues: [],
     quickWins: ['Review and test CTA button colors and copy'],
     strengths: ['Website is live and accessible'],
@@ -178,7 +153,7 @@ export async function generateRoadmap(
 ): Promise<AIRoadmap> {
   const stream = client.messages.stream({
     model: MODEL,
-    max_tokens: 8192,
+    max_tokens: 16000,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     thinking: { type: 'adaptive' } as any,
     system: [

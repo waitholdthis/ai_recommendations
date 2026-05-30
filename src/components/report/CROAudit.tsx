@@ -7,13 +7,19 @@ import { ScoreGauge, scoreColor } from '@/components/ScoreGauge';
 import { ImpactBadge } from '@/components/ImpactBadge';
 
 const DIMS = [
-  { key: 'heroScore' as const,        label: 'Hero Section' },
-  { key: 'navigationScore' as const,  label: 'Navigation' },
-  { key: 'ctaScore' as const,         label: 'Call-to-Action' },
-  { key: 'socialProofScore' as const, label: 'Social Proof' },
-  { key: 'mobileScore' as const,      label: 'Mobile UX' },
-  { key: 'trustScore' as const,       label: 'Trust Signals' },
-  { key: 'contentScore' as const,     label: 'Content Quality' },
+  { key: 'heroScore' as const,             label: 'Hero Section' },
+  { key: 'navigationScore' as const,       label: 'Navigation' },
+  { key: 'ctaScore' as const,              label: 'Call-to-Action' },
+  { key: 'socialProofScore' as const,      label: 'Social Proof' },
+  { key: 'mobileScore' as const,           label: 'Mobile UX' },
+  { key: 'trustScore' as const,            label: 'Trust Signals' },
+  { key: 'contentScore' as const,          label: 'Content Quality' },
+  { key: 'valuePropositionScore' as const, label: 'Value Proposition' },
+  { key: 'copyQualityScore' as const,      label: 'Copy Quality' },
+  { key: 'brandConsistencyScore' as const, label: 'Brand Consistency' },
+  { key: 'accessibilityScore' as const,    label: 'Accessibility' },
+  { key: 'seoScore' as const,              label: 'SEO Structure' },
+  { key: 'performanceScore' as const,      label: 'Performance' },
 ];
 
 const SEV_ORDER = ['Critical','High','Medium','Low'];
@@ -33,6 +39,14 @@ export function CROAuditSection({ audit }: { audit: CROAudit }) {
 
   return (
     <div className="space-y-5">
+
+      {/* Audit executive summary */}
+      {audit.executiveSummary && (
+        <div className="card p-5" style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.07), rgba(167,139,250,0.03))' }}>
+          <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#45455F' }}>Audit Verdict</p>
+          <p className="text-sm leading-relaxed" style={{ color: '#9090B0' }}>{audit.executiveSummary}</p>
+        </div>
+      )}
 
       {/* Top row: big score + dimension bars */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
@@ -207,14 +221,49 @@ function IssueRow({ issue, index, isOpen, onToggle }: {
             exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
             <div className="px-4 pb-5" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
               <div className="pt-4 space-y-4">
+
+                {/* Screenshot observation */}
+                {issue.screenshotObservation && (
+                  <div className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#45455F' }}>Visual Evidence</p>
+                    <p className="text-sm leading-relaxed" style={{ color: '#9090B0' }}>{issue.screenshotObservation}</p>
+                  </div>
+                )}
+
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#45455F' }}>Problem</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#45455F' }}>Why It Costs Conversions</p>
                   <p className="text-sm leading-relaxed" style={{ color: '#9090B0' }}>{issue.description}</p>
                 </div>
+
                 <div className="p-4 rounded-xl" style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)' }}>
                   <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6366F1' }}>Recommendation</p>
                   <p className="text-sm leading-relaxed" style={{ color: '#EDEDFA' }}>{issue.recommendation}</p>
                 </div>
+
+                {/* Copy suggestion */}
+                {issue.specificCopySuggestion && (
+                  <div className="p-3 rounded-xl" style={{ background: 'rgba(34,197,94,0.05)', border: '1px solid rgba(34,197,94,0.2)' }}>
+                    <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#16A34A' }}>Copy to Use</p>
+                    <p className="text-sm font-medium leading-relaxed" style={{ color: '#4ADE80', fontStyle: 'italic' }}>&ldquo;{issue.specificCopySuggestion}&rdquo;</p>
+                  </div>
+                )}
+
+                {/* A/B test hypothesis */}
+                {issue.abTestHypothesis && (
+                  <div className="p-3 rounded-xl" style={{ background: 'rgba(251,191,36,0.05)', border: '1px solid rgba(251,191,36,0.15)' }}>
+                    <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#B45309' }}>A/B Test Hypothesis</p>
+                    <p className="text-sm leading-relaxed" style={{ color: '#9090B0' }}>{issue.abTestHypothesis}</p>
+                  </div>
+                )}
+
+                {/* Benchmark comparison */}
+                {issue.benchmarkComparison && (
+                  <div className="p-3 rounded-xl" style={{ background: 'rgba(192,132,252,0.05)', border: '1px solid rgba(192,132,252,0.15)' }}>
+                    <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#7E22CE' }}>Best-in-Class Benchmark</p>
+                    <p className="text-sm leading-relaxed" style={{ color: '#9090B0' }}>{issue.benchmarkComparison}</p>
+                  </div>
+                )}
+
                 <div className="flex flex-wrap gap-5">
                   <div>
                     <p className="text-xs mb-1.5" style={{ color: '#45455F' }}>Conversion Lift</p>

@@ -33,7 +33,7 @@ export function AIRoadmapSection({ roadmap }: { roadmap: AIRoadmap }) {
       {/* Summary banner */}
       <div className="card p-6" style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(167,139,250,0.04))' }}>
         <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#45455F' }}>AI Solutions Roadmap</p>
-        <p className="text-sm leading-relaxed max-w-3xl mb-4" style={{ color: '#9090B0' }}>{roadmap.executiveSummary}</p>
+        <p className="text-sm leading-relaxed mb-4" style={{ color: '#9090B0' }}>{roadmap.executiveSummary}</p>
         <div className="p-4 rounded-xl mb-4" style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)' }}>
           <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#45455F' }}>Top Recommendation</p>
           <p className="text-sm font-medium" style={{ color: '#EDEDFA' }}>{roadmap.topRecommendation}</p>
@@ -165,6 +165,14 @@ function OpportunityCard({ opp, index, phaseColor }: { opp: AIOpportunity; index
                   <p className="text-sm leading-relaxed" style={{ color: '#9090B0' }}>{opp.implementationApproach}</p>
                 </div>
 
+                {/* Build vs Buy */}
+                {opp.buildVsBuy && (
+                  <div className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#45455F' }}>Build vs Buy</p>
+                    <p className="text-sm leading-relaxed" style={{ color: '#9090B0' }}>{opp.buildVsBuy}</p>
+                  </div>
+                )}
+
                 {/* Tools */}
                 {opp.tools.length > 0 && (
                   <div>
@@ -175,6 +183,36 @@ function OpportunityCard({ opp, index, phaseColor }: { opp: AIOpportunity; index
                           style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)', color: '#818CF8' }}>
                           {t}
                         </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Integration requirements */}
+                {opp.integrationRequirements && opp.integrationRequirements.length > 0 && (
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#45455F' }}>Integration Requirements</p>
+                    <div className="space-y-1.5">
+                      {opp.integrationRequirements.map((req, i) => (
+                        <div key={i} className="flex items-start gap-2 text-xs">
+                          <span className="flex-shrink-0 mt-0.5" style={{ color: '#F97316' }}>⚡</span>
+                          <span style={{ color: '#9090B0' }}>{req}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Risk factors */}
+                {opp.riskFactors && opp.riskFactors.length > 0 && (
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#45455F' }}>Risk Factors</p>
+                    <div className="space-y-1.5">
+                      {opp.riskFactors.map((r, i) => (
+                        <div key={i} className="flex items-start gap-2 text-xs">
+                          <span className="flex-shrink-0 mt-0.5" style={{ color: '#EF4444' }}>⚠</span>
+                          <span style={{ color: '#9090B0' }}>{r}</span>
+                        </div>
                       ))}
                     </div>
                   </div>
