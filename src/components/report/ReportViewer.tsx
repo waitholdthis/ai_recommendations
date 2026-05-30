@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import type { AnalysisReport } from '@/lib/types';
 import { formatUrl } from '@/lib/utils';
@@ -45,6 +45,31 @@ function ScorePill({ label, score }: { label: string; score: number }) {
 
 export function ReportViewer({ report, onReset }: { report: AnalysisReport; onReset: () => void }) {
   const [tab, setTab] = useState<Tab>('summary');
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownloadPDF = useCallback(async () => {
+    setDownloading(true);
+    try {
+      const res = await fetch('/api/export-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(report),
+      });
+      if (!res.ok) throw new Error(`Export failed: ${res.status}`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const slug = report.businessName.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40);
+      a.href = url;
+      a.download = `bizscout-${slug}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('PDF download failed:', err);
+    } finally {
+      setDownloading(false);
+    }
+  }, [report]);
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: '#07070F' }}>
@@ -76,11 +101,34 @@ export function ReportViewer({ report, onReset }: { report: AnalysisReport; onRe
             <div className="flex items-center gap-2 flex-shrink-0">
               <ScorePill label="CRO" score={report.croAudit.overallScore} />
               <ScorePill label="AI Readiness" score={report.classification.aiReadinessScore} />
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium"
+              <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium"
                 style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)', color: '#818CF8' }}>
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                 {new Date(report.analyzedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
               </div>
+              <button
+                onClick={handleDownloadPDF}
+                disabled={downloading}
+                className="btn-primary flex items-center gap-1.5 px-4 py-2 text-xs font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {downloading ? (
+                  <>
+                    <svg className="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                    </svg>
+                    Building PDF…
+                  </>
+                ) : (
+                  <>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="7 10 12 15 17 10"/>
+                      <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Export PDF
+                  </>
+                )}
+              </button>
             </div>
           </div>
 
