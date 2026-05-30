@@ -32,23 +32,13 @@ export function AIRoadmapSection({ roadmap }: { roadmap: AIRoadmap }) {
 
       {/* Summary banner */}
       <div className="card p-6" style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(167,139,250,0.04))' }}>
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#45455F' }}>AI Solutions Roadmap</p>
-            <p className="text-sm leading-relaxed max-w-2xl" style={{ color: '#9090B0' }}>{roadmap.executiveSummary}</p>
-            <div className="mt-4 p-4 rounded-xl" style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)' }}>
-              <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#45455F' }}>Top Recommendation</p>
-              <p className="text-sm font-medium" style={{ color: '#EDEDFA' }}>{roadmap.topRecommendation}</p>
-            </div>
-          </div>
-          {roadmap.totalEstimatedROI && (
-            <div className="flex-shrink-0 text-center p-5 rounded-2xl"
-              style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)', minWidth: 140 }}>
-              <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#45455F' }}>Total Est. ROI</p>
-              <p className="text-2xl font-black tracking-tight gradient-text-primary">{roadmap.totalEstimatedROI}</p>
-            </div>
-          )}
+        <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#45455F' }}>AI Solutions Roadmap</p>
+        <p className="text-sm leading-relaxed max-w-3xl mb-4" style={{ color: '#9090B0' }}>{roadmap.executiveSummary}</p>
+        <div className="p-4 rounded-xl mb-4" style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)' }}>
+          <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#45455F' }}>Top Recommendation</p>
+          <p className="text-sm font-medium" style={{ color: '#EDEDFA' }}>{roadmap.topRecommendation}</p>
         </div>
+        {roadmap.totalEstimatedROI && <ROIBlock roi={roadmap.totalEstimatedROI} />}
       </div>
 
       {/* Phase selector */}
@@ -92,6 +82,26 @@ export function AIRoadmapSection({ roadmap }: { roadmap: AIRoadmap }) {
           </div>
         </motion.div>
       </AnimatePresence>
+    </div>
+  );
+}
+
+function ROIBlock({ roi }: { roi: string }) {
+  const colonIdx = roi.indexOf(':');
+  const headline = colonIdx > -1 ? roi.slice(0, colonIdx).trim() : null;
+  const detail   = colonIdx > -1 ? roi.slice(colonIdx + 1).trim() : roi;
+  return (
+    <div className="p-4 rounded-xl" style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.2)' }}>
+      <div className="flex items-center gap-2 mb-2">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2">
+          <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+        <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: '#16A34A' }}>Total Estimated ROI</p>
+      </div>
+      {headline && (
+        <p className="text-base font-black tracking-tight gradient-text-primary mb-1">{headline}</p>
+      )}
+      <p className="text-sm leading-relaxed" style={{ color: '#9090B0' }}>{detail}</p>
     </div>
   );
 }

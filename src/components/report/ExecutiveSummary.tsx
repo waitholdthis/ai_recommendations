@@ -210,16 +210,7 @@ export function ExecutiveSummary({ report, onTabChange }: Props) {
         </div>
 
         {aiRoadmap.totalEstimatedROI && (
-          <div className="mt-4 flex items-center justify-between p-5 rounded-2xl"
-            style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(167,139,250,0.05))', border: '1px solid rgba(99,102,241,0.2)' }}>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: '#45455F' }}>Total Estimated ROI</p>
-              <p className="text-2xl font-black tracking-tight gradient-text-primary">{aiRoadmap.totalEstimatedROI}</p>
-            </div>
-            <button onClick={() => onTabChange('roadmap')} className="btn-primary px-5 py-2.5 text-sm">
-              View Roadmap →
-            </button>
-          </div>
+          <ROICallout roi={aiRoadmap.totalEstimatedROI} onViewRoadmap={() => onTabChange('roadmap')} />
         )}
       </motion.div>
     </div>
@@ -240,6 +231,36 @@ function KPICard({ label, value, suffix, color, sub, onClick, delay }: {
       </div>
       <p className="text-xs" style={{ color: '#9090B0' }}>{sub}</p>
     </motion.button>
+  );
+}
+
+function ROICallout({ roi, onViewRoadmap }: { roi: string; onViewRoadmap: () => void }) {
+  // Split on the first colon so we can bold the headline (e.g. "350–700% over 18 months")
+  const colonIdx = roi.indexOf(':');
+  const headline = colonIdx > -1 ? roi.slice(0, colonIdx).trim() : null;
+  const detail   = colonIdx > -1 ? roi.slice(colonIdx + 1).trim() : roi;
+
+  return (
+    <div className="mt-4 p-5 rounded-2xl"
+      style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(167,139,250,0.05))', border: '1px solid rgba(99,102,241,0.2)' }}>
+      <div className="flex items-start justify-between gap-6 flex-wrap">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-2">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#818CF8" strokeWidth="2">
+              <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: '#45455F' }}>Total Estimated ROI</p>
+          </div>
+          {headline && (
+            <p className="text-base font-black tracking-tight mb-1.5 gradient-text-primary">{headline}</p>
+          )}
+          <p className="text-sm leading-relaxed" style={{ color: '#9090B0' }}>{detail}</p>
+        </div>
+        <button onClick={onViewRoadmap} className="btn-primary px-5 py-2.5 text-sm flex-shrink-0">
+          View Roadmap →
+        </button>
+      </div>
+    </div>
   );
 }
 

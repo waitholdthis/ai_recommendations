@@ -513,12 +513,20 @@ function RoadmapPage({ report }: { report: AnalysisReport }) {
           <Text style={S.sectionDesc}>{aiRoadmap.executiveSummary}</Text>
         </View>
 
-        {aiRoadmap.totalEstimatedROI && (
-          <View style={[S.highlightBox, { marginBottom: 16 }]}>
-            <Text style={S.highlightLabel}>Total Estimated ROI — Full Implementation</Text>
-            <Text style={[S.highlightText, { fontSize: 18, color: C.primary, letterSpacing: -0.3 }]}>{aiRoadmap.totalEstimatedROI}</Text>
-          </View>
-        )}
+        {aiRoadmap.totalEstimatedROI && (() => {
+          const colonIdx = aiRoadmap.totalEstimatedROI.indexOf(':');
+          const headline = colonIdx > -1 ? aiRoadmap.totalEstimatedROI.slice(0, colonIdx).trim() : null;
+          const detail   = colonIdx > -1 ? aiRoadmap.totalEstimatedROI.slice(colonIdx + 1).trim() : aiRoadmap.totalEstimatedROI;
+          return (
+            <View style={[S.highlightBox, { marginBottom: 16, backgroundColor: '#F0FDF4', borderColor: '#BBF7D0' }]}>
+              <Text style={[S.highlightLabel, { color: '#166534' }]}>Total Estimated ROI — Full Implementation</Text>
+              {headline && (
+                <Text style={[S.highlightText, { color: C.primary, fontSize: 13, marginBottom: 5 }]}>{headline}</Text>
+              )}
+              <Text style={[S.tableCell, { lineHeight: 1.5, color: '#374151' }]}>{detail}</Text>
+            </View>
+          );
+        })()}
 
         {phases.map(({ data, num, color, bg, border, textColor }) => {
           if (!data?.opportunities?.length) return null;

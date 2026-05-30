@@ -168,7 +168,7 @@ Return ONLY a valid JSON object with this exact structure (no markdown, no expla
     "duration": "Months 6-18",
     "opportunities": [...]
   },
-  "totalEstimatedROI": "string",
+  "totalEstimatedROI": "string — a full explanatory paragraph (2-3 sentences). Must include: percentage ROI range, incremental revenue range in dollars, approximate total investment required, and the 3-4 specific drivers that produce the return. Example format: '350-700% over 18 months: $40K-90K incremental annual revenue from a ~$8K-15K total investment, driven primarily by recovered missed inquiries, improved booking conversion, organic SEO growth, and retention-driven LTV gains.'",
   "topRecommendation": "string"
 }
 
