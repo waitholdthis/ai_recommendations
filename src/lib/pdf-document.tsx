@@ -186,7 +186,7 @@ function PageHeader({ bizName, section, page }: { bizName: string; section: stri
 function PageFooter({ page }: { page?: number }) {
   return (
     <View style={S.pageFooter} fixed>
-      <Text style={S.pageFooterText}>AI-BizScout · Confidential</Text>
+      <Text style={S.pageFooterText}>Tootie Website Growth Audit · Powered by AI-BizScout</Text>
       <Text style={S.pageFooterText} render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
     </View>
   );
@@ -229,10 +229,10 @@ function CoverPage({ report }: { report: AnalysisReport }) {
       <View style={S.banner}>
         <View style={S.bannerLogo}>
           <View style={S.bannerMark}><Text style={S.bannerMarkText}>✦</Text></View>
-          <Text style={S.bannerBrand}>AI-BizScout</Text>
+          <Text style={S.bannerBrand}>Tootie Website Growth Audit</Text>
         </View>
-        <Text style={S.bannerTitle}>Business Analysis{'\n'}Report</Text>
-        <Text style={S.bannerSub}>AI Solutions Roadmap  ·  Visual CRO Audit  ·  Business Intelligence</Text>
+        <Text style={S.bannerTitle}>Website Growth{'\n'}Audit</Text>
+        <Text style={S.bannerSub}>Powered by AI-BizScout  ·  CRO Audit  ·  Tootie Designs Growth Roadmap</Text>
       </View>
 
       {/* Body */}
@@ -291,6 +291,7 @@ function CoverPage({ report }: { report: AnalysisReport }) {
             ['01', 'Executive Summary', 'Business profile, scores, and key insights'],
             ['02', 'CRO Audit', 'Visual analysis, issues, and quick wins'],
             ['03', 'AI Solutions Roadmap', 'Phase-by-phase AI implementation plan'],
+            ['04', 'Tootie Handoff Brief', 'Recommended package, priority fixes, and discovery prompts'],
           ].map(([num, title, desc]) => (
             <View key={num} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: C.border }}>
               <Text style={{ fontSize: 8, color: C.primary, fontFamily: 'Helvetica-Bold', width: 22 }}>{num}</Text>
@@ -306,7 +307,7 @@ function CoverPage({ report }: { report: AnalysisReport }) {
       {/* Footer */}
       <View style={S.coverFooter}>
         <Text style={S.coverFooterText}>Confidential — For internal use only</Text>
-        <Text style={S.coverFooterText}>Powered by Claude Opus 4.7</Text>
+        <Text style={S.coverFooterText}>Powered by AI-BizScout</Text>
       </View>
     </Page>
   );
@@ -337,6 +338,34 @@ function ExecSummaryPage({ report }: { report: AnalysisReport }) {
           <Text style={[S.highlightLabel, { color: '#92400E' }]}>Top Recommendation</Text>
           <Text style={[S.highlightText, { color: '#78350F' }]}>{aiRoadmap.topRecommendation}</Text>
         </View>
+
+        {(aiRoadmap.clientContactBrief || aiRoadmap.tootieServiceFit) && (
+          <View style={[S.infoCard, { backgroundColor: '#F0FDF4', borderColor: '#BBF7D0' }]}>
+            <Text style={[S.infoCardTitle, { color: '#166534' }]}>Tootie Handoff Brief</Text>
+            {aiRoadmap.clientContactBrief?.plainEnglishVerdict && <Text style={S.bulletText}>{aiRoadmap.clientContactBrief.plainEnglishVerdict}</Text>}
+            {aiRoadmap.tootieServiceFit?.recommendedTootiePackage && (
+              <Text style={[S.highlightText, { color: '#166534', marginTop: 8 }]}>Recommended Tootie Package: {aiRoadmap.tootieServiceFit.recommendedTootiePackage}</Text>
+            )}
+            {aiRoadmap.tootieServiceFit?.priorityFixSequence?.slice(0, 4).map((fix, i) => (
+              <View key={i} style={S.bulletRow}>
+                <Text style={{ color: C.success, fontSize: 9, marginTop: 1 }}>→</Text>
+                <Text style={S.bulletText}>{fix}</Text>
+              </View>
+            ))}
+            {aiRoadmap.clientContactBrief?.whatToAskTootie?.slice(0, 3).map((ask, i) => (
+              <View key={`ask-${i}`} style={S.bulletRow}>
+                <Text style={{ color: C.primary, fontSize: 9, marginTop: 1 }}>Q</Text>
+                <Text style={S.bulletText}>{ask}</Text>
+              </View>
+            ))}
+            {aiRoadmap.tootieServiceFit?.leadQualificationSignals?.length ? (
+              <Text style={[S.bulletText, { marginTop: 6 }]}>Lead signals: {aiRoadmap.tootieServiceFit.leadQualificationSignals.slice(0, 3).join(' · ')}</Text>
+            ) : null}
+            {aiRoadmap.tootieServiceFit?.suggestedNextStep ? (
+              <Text style={[S.highlightText, { color: C.navy, marginTop: 6 }]}>Next step: {aiRoadmap.tootieServiceFit.suggestedNextStep}</Text>
+            ) : null}
+          </View>
+        )}
 
         <View style={[S.divider, { marginTop: 8 }]} />
 
@@ -600,10 +629,10 @@ function OpportunityBlock({ opp, accentColor }: { opp: AIOpportunity; accentColo
 export function BizScoutPDF({ report }: { report: AnalysisReport }) {
   return (
     <Document
-      title={`AI-BizScout Report — ${report.businessName}`}
-      author="AI-BizScout"
-      subject="Business Analysis Report"
-      creator="AI-BizScout powered by Claude Opus 4.7"
+      title={`Tootie Website Growth Audit — ${report.businessName}`}
+      author="Tootie Designs / AI-BizScout"
+      subject="Website Growth Audit"
+      creator="Tootie Website Growth Audit powered by AI-BizScout"
     >
       <CoverPage report={report} />
       <ExecSummaryPage report={report} />

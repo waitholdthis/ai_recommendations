@@ -61,7 +61,7 @@ export function ReportViewer({ report, onReset }: { report: AnalysisReport; onRe
       const a = document.createElement('a');
       const slug = report.businessName.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40);
       a.href = url;
-      a.download = `bizscout-${slug}.pdf`;
+      a.download = `tootie-growth-audit-${slug}.pdf`;
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
@@ -88,7 +88,7 @@ export function ReportViewer({ report, onReset }: { report: AnalysisReport; onRe
               </button>
               <div className="w-px h-4 flex-shrink-0" style={{ background: 'rgba(255,255,255,0.08)' }} />
               <div className="min-w-0">
-                <h1 className="text-sm font-semibold truncate" style={{ color: '#EDEDFA' }}>{report.businessName}</h1>
+                <h1 className="text-sm font-semibold truncate" style={{ color: '#EDEDFA' }}>{report.businessName} Website Growth Audit</h1>
                 <a href={report.url} target="_blank" rel="noopener noreferrer"
                   className="text-xs truncate flex items-center gap-1 hover:underline"
                   style={{ color: '#45455F' }}>
@@ -125,7 +125,7 @@ export function ReportViewer({ report, onReset }: { report: AnalysisReport; onRe
                       <polyline points="7 10 12 15 17 10"/>
                       <line x1="12" y1="15" x2="12" y2="3"/>
                     </svg>
-                    Export PDF
+                    Export Audit PDF
                   </>
                 )}
               </button>

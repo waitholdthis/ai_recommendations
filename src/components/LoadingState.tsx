@@ -5,9 +5,9 @@ import type { ProgressStage } from '@/lib/types';
 
 const STEPS: { key: ProgressStage; label: string; detail: string }[] = [
   { key: 'scraping',        label: 'Crawling website',      detail: 'Screenshot & DOM extraction' },
-  { key: 'classifying',     label: 'Classifying business',  detail: 'Industry, model & AI readiness' },
+  { key: 'classifying',     label: 'Building client profile',  detail: 'Industry, model, buyer friction & AI readiness' },
   { key: 'visual_analysis', label: 'Visual CRO audit',      detail: 'Multimodal AI screenshot analysis' },
-  { key: 'roadmap',         label: 'Building AI roadmap',   detail: '3-phase implementation plan' },
+  { key: 'roadmap',         label: 'Building Tootie roadmap',   detail: 'Design, CRO, automation & AI implementation plan' },
   { key: 'finalizing',      label: 'Compiling report',      detail: 'Assembling final output' },
 ];
 
@@ -52,7 +52,7 @@ export function LoadingState({ stage, message, progress }: { stage: ProgressStag
 
         {/* Heading */}
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold mb-2 tracking-tight" style={{ color: '#EDEDFA' }}>Analyzing your website</h2>
+          <h2 className="text-2xl font-bold mb-2 tracking-tight" style={{ color: '#EDEDFA' }}>Building your Tootie audit</h2>
           <motion.p key={message} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className="text-sm" style={{ color: '#9090B0' }}>
             {message}
           </motion.p>

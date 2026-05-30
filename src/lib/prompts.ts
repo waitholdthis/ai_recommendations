@@ -389,12 +389,28 @@ REQUIREMENTS:
 - Every opportunity must include build vs buy recommendation with rationale
 - Risk factors must be specific to THIS business's context (not generic)
 - Integration requirements must name the specific systems that need to connect
+- Include a clientContactBrief written in plain English so a business owner knows exactly what to discuss with Tootie Designs
+- Include tootieServiceFit with recommendedTootiePackage, priorityFixSequence, leadQualificationSignals, and suggestedNextStep so the report doubles as a Tootie Designs sales handoff
 
 Return ONLY a valid JSON object with this exact structure (no markdown, no explanation):
 {
   "executiveSummary": "string — 4-5 sentences, board-ready. Start with where the business is today, identify the single highest-leverage opportunity, explain the phased logic, close with the headline ROI claim.",
   "topRecommendation": "string — the single most impactful initiative with specific expected outcome and timeline",
   "totalEstimatedROI": "string — full explanatory paragraph (3-4 sentences). Format: '[X-Y]% ROI over [Z] months: $[A]K-$[B]K incremental annual value from a $[C]K-$[D]K total investment. Primary value drivers: [driver 1 with $ estimate], [driver 2 with $ estimate], [driver 3 with $ estimate]. Investment breakdown: [tooling ~$X], [implementation ~$Y], [change management ~$Z]. Payback period: [N] months.'",
+  "clientContactBrief": {
+    "plainEnglishVerdict": "string — direct owner-friendly diagnosis of what the website is costing them and what they should feel confident asking for",
+    "whyItMatters": "string — why these issues affect leads, trust, bookings, sales, or perceived professionalism",
+    "whatToAskTootie": ["string — exact question/request the client can bring to Tootie Designs", "string", "string", "string"],
+    "salesConversationStarters": ["string — high-value discovery prompt Tootie Designs can use on a sales call", "string", "string", "string"]
+  },
+  "tootieServiceFit": {
+    "recommendedTootiePackage": "Website Launch" | "Conversion Landing Page" | "Digital System Build" | "Website Redesign" | "Growth Retainer" | "Custom",
+    "fitRationale": "string — why this package is the best next Tootie Designs offer",
+    "priorityFixSequence": ["string — first fix", "string — second fix", "string — third fix", "string — fourth fix"],
+    "leadQualificationSignals": ["string — budget/urgency/scope signal visible from the site", "string", "string"],
+    "budgetSensitivity": "string — likely budget posture inferred from positioning, site maturity, and tech stack",
+    "suggestedNextStep": "string — specific next action, e.g. 'Request a Tootie Designs website redesign sprint focused on homepage clarity and lead capture.'"
+  },
   "phase1": {
     "title": "Quick Wins",
     "duration": "Weeks 1-8",
@@ -430,5 +446,5 @@ Return ONLY a valid JSON object with this exact structure (no markdown, no expla
   }
 }
 
-Make every recommendation highly specific to ${url} and its industry. Reference the CRO audit issues where relevant — Phase 1 should directly address the highest-severity CRO gaps.`;
+Make every recommendation highly specific to ${url} and its industry. Reference the CRO audit issues where relevant — Phase 1 should directly address the highest-severity CRO gaps. Frame the clientContactBrief and tootieServiceFit as a premium Tootie Designs handoff: useful to the client, useful to Parker/Tootie Designs, and specific enough to start a paid design/software conversation.`;
 }

@@ -18,7 +18,7 @@ const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-const MODEL = 'claude-opus-4-7';
+const MODEL = process.env.ANTHROPIC_MODEL || 'claude-opus-4-7';
 
 function parseJSON<T>(text: string, fallback: T): T {
   try {
@@ -181,6 +181,20 @@ export async function generateRoadmap(
     phase2: { title: 'Strategic Growth', duration: 'Months 2-6', opportunities: [] },
     phase3: { title: 'Transformative Scale', duration: 'Months 6-18', opportunities: [] },
     totalEstimatedROI: 'TBD',
-    topRecommendation: 'Start with AI-powered customer support automation.',
+    topRecommendation: 'Start with the highest-severity conversion fixes before scaling AI automation.',
+    clientContactBrief: {
+      plainEnglishVerdict: 'Your site has enough signal to identify a prioritized growth plan, but the report needs a full model response for final detail.',
+      whyItMatters: 'A clearer first impression, stronger trust path, and cleaner lead capture flow typically improve contact quality before paid traffic or automation scale.',
+      whatToAskTootie: ['Which homepage changes would most improve lead quality?', 'Which trust signals are missing?', 'What should be rebuilt first?'],
+      salesConversationStarters: ['What are the top three reasons visitors hesitate before contacting you?', 'Which offer or service is most profitable?', 'What does a qualified lead look like?'],
+    },
+    tootieServiceFit: {
+      recommendedTootiePackage: 'Website Redesign',
+      fitRationale: 'The safest first move is a focused redesign sprint that improves clarity, trust, and lead capture before deeper automation.',
+      priorityFixSequence: ['Clarify the above-the-fold offer', 'Strengthen proof and trust signals', 'Rebuild the lead capture path', 'Add measurement and follow-up automation'],
+      leadQualificationSignals: ['Existing website is live', 'Conversion path can be audited', 'Growth improvements can be sequenced'],
+      budgetSensitivity: 'Unknown until discovery; likely scope should be packaged around the highest-impact fixes first.',
+      suggestedNextStep: 'Request a Tootie Designs website growth audit review and prioritize the first redesign sprint.',
+    },
   });
 }

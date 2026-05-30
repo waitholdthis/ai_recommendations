@@ -121,6 +121,22 @@ export interface AIOpportunity {
   integrationRequirements: string[];
 }
 
+export interface TootieServiceFit {
+  recommendedTootiePackage: 'Website Launch' | 'Conversion Landing Page' | 'Digital System Build' | 'Website Redesign' | 'Growth Retainer' | 'Custom';
+  fitRationale: string;
+  priorityFixSequence: string[];
+  leadQualificationSignals: string[];
+  budgetSensitivity: string;
+  suggestedNextStep: string;
+}
+
+export interface ClientContactBrief {
+  plainEnglishVerdict: string;
+  whyItMatters: string;
+  whatToAskTootie: string[];
+  salesConversationStarters: string[];
+}
+
 export interface AIRoadmap {
   executiveSummary: string;
   phase1: {
@@ -140,6 +156,8 @@ export interface AIRoadmap {
   };
   totalEstimatedROI: string;
   topRecommendation: string;
+  clientContactBrief?: ClientContactBrief;
+  tootieServiceFit?: TootieServiceFit;
 }
 
 export interface AnalysisReport {

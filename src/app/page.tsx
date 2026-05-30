@@ -19,7 +19,7 @@ export default function HomePage() {
   const handleAnalyze = useCallback(async (rawUrl: string) => {
     const url = normalizeUrl(rawUrl);
     setAppState('loading');
-    setProgress({ stage: 'initializing', message: 'Initializing analysis engine...', progress: 5 });
+    setProgress({ stage: 'initializing', message: 'Initializing Tootie Website Growth Audit...', progress: 5 });
     setReport(null);
     setErrorMessage('');
 
@@ -105,8 +105,8 @@ const FEATURES = [
         <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
       </svg>
     ),
-    title: 'Visual CRO Audit',
-    desc: 'Multimodal AI analyzes your screenshot for conversion killers with specific fixes and impact scores.',
+    title: 'Website Growth Audit',
+    desc: 'Multimodal AI analyzes the first impression, trust path, conversion friction, and the fixes most likely to create better leads.',
   },
   {
     icon: (
@@ -114,8 +114,8 @@ const FEATURES = [
         <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
       </svg>
     ),
-    title: 'AI Solutions Roadmap',
-    desc: '3-phase implementation plan with named tools, realistic timelines, and estimated ROI for each initiative.',
+    title: 'Tootie Fix Roadmap',
+    desc: 'A prioritized sequence of design, copy, CRO, automation, and AI improvements that can become a Tootie Designs project brief.',
   },
   {
     icon: (
@@ -123,8 +123,8 @@ const FEATURES = [
         <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
       </svg>
     ),
-    title: 'Business Intelligence',
-    desc: 'Deep classification of industry, model, audience, pain points, and AI readiness — all from a single URL.',
+    title: 'Client-Ready Brief',
+    desc: 'Business model, buyer friction, lead quality signals, recommended package, and conversation starters for contacting Tootie Designs.',
   },
 ];
 
@@ -151,11 +151,11 @@ function HeroPage({ onAnalyze }: { onAnalyze: (url: string) => void }) {
               <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
             </svg>
           </div>
-          <span className="font-semibold text-sm tracking-tight" style={{ color: '#EDEDFA' }}>AI-BizScout</span>
+          <span className="font-semibold text-sm tracking-tight" style={{ color: '#EDEDFA' }}>Tootie Website Growth Audit</span>
         </div>
         <div className="flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full" style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)', color: '#818CF8' }}>
           <span className="w-1.5 h-1.5 rounded-full bg-primary-light animate-pulse-dot" />
-          Powered by Claude Opus 4.7
+          Powered by AI-BizScout
         </div>
       </header>
 
@@ -169,7 +169,7 @@ function HeroPage({ onAnalyze }: { onAnalyze: (url: string) => void }) {
             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#9090B0' }}
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6366F1" strokeWidth="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
-            Business Intelligence · CRO Audit · AI Roadmap
+            Tootie Designs · CRO Audit · AI Growth Roadmap
           </motion.div>
 
           {/* Headline */}
@@ -177,9 +177,9 @@ function HeroPage({ onAnalyze }: { onAnalyze: (url: string) => void }) {
             className="font-black mb-6 leading-none tracking-tighter"
             style={{ fontSize: 'clamp(42px, 7vw, 72px)', color: '#EDEDFA' }}
           >
-            Turn any website into
+            Find what your website is
             <br />
-            <span className="gradient-text">an AI growth engine</span>
+            <span className="gradient-text">quietly costing you</span>
           </motion.h1>
 
           {/* Subhead */}
@@ -187,7 +187,7 @@ function HeroPage({ onAnalyze }: { onAnalyze: (url: string) => void }) {
             className="text-lg mb-12 max-w-xl mx-auto leading-relaxed"
             style={{ color: '#9090B0' }}
           >
-            Drop any business URL and get a multimodal AI analysis — visual CRO audit, business classification, and a 3-phase AI solutions roadmap in under 90 seconds.
+            Drop in your business URL and get a Tootie-style growth audit: first-impression verdict, conversion leaks, trust gaps, AI opportunities, and a clear brief for what to fix next.
           </motion.p>
 
           {/* URL Input */}

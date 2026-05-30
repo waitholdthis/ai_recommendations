@@ -57,6 +57,109 @@ export function ExecutiveSummary({ report, onTabChange }: Props) {
             </div>
           </div>
 
+          {(aiRoadmap.clientContactBrief || aiRoadmap.tootieServiceFit) && (
+            <div className="card p-6" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.06), rgba(99,102,241,0.04))' }}>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+                  style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ADE80" strokeWidth="2"><path d="M20 6 9 17l-5-5"/></svg>
+                </div>
+                <div>
+                  <h2 className="text-sm font-semibold" style={{ color: '#EDEDFA' }}>Tootie Handoff Brief</h2>
+                  <p className="text-xs" style={{ color: '#45455F' }}>What this means before contacting Tootie Designs</p>
+                </div>
+              </div>
+
+              {aiRoadmap.clientContactBrief?.plainEnglishVerdict && (
+                <p className="text-sm leading-relaxed mb-4" style={{ color: '#9090B0' }}>{aiRoadmap.clientContactBrief.plainEnglishVerdict}</p>
+              )}
+
+              {aiRoadmap.clientContactBrief?.whyItMatters && (
+                <div className="p-3 rounded-xl mb-4" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                  <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#45455F' }}>Why It Matters</p>
+                  <p className="text-sm leading-relaxed" style={{ color: '#9090B0' }}>{aiRoadmap.clientContactBrief.whyItMatters}</p>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {aiRoadmap.tootieServiceFit && (
+                  <div className="p-4 rounded-xl" style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.14)' }}>
+                    <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6366F1' }}>Recommended Tootie Package</p>
+                    <p className="text-sm font-semibold mb-2" style={{ color: '#EDEDFA' }}>{aiRoadmap.tootieServiceFit.recommendedTootiePackage}</p>
+                    <p className="text-xs leading-relaxed" style={{ color: '#9090B0' }}>{aiRoadmap.tootieServiceFit.fitRationale}</p>
+                  </div>
+                )}
+
+                {aiRoadmap.clientContactBrief?.salesConversationStarters?.length ? (
+                  <div className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#45455F' }}>Sales Conversation Starters</p>
+                    <ul className="space-y-2">
+                      {aiRoadmap.clientContactBrief.salesConversationStarters.slice(0, 3).map((item, i) => (
+                        <li key={i} className="flex items-start gap-2 text-xs leading-relaxed">
+                          <span style={{ color: '#4ADE80', marginTop: 2 }}>→</span>
+                          <span style={{ color: '#9090B0' }}>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+              </div>
+
+              {aiRoadmap.clientContactBrief?.whatToAskTootie?.length ? (
+                <div className="mt-4 p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                  <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#45455F' }}>What To Ask Tootie Designs</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {aiRoadmap.clientContactBrief.whatToAskTootie.slice(0, 4).map((item, i) => (
+                      <div key={i} className="text-xs leading-relaxed p-2 rounded-lg" style={{ background: 'rgba(255,255,255,0.03)', color: '#9090B0' }}>
+                        <span style={{ color: '#818CF8', fontWeight: 700 }}>Q{i + 1}.</span> {item}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
+              {aiRoadmap.tootieServiceFit?.priorityFixSequence?.length ? (
+                <div className="mt-4 p-4 rounded-xl" style={{ background: 'rgba(251,191,36,0.05)', border: '1px solid rgba(251,191,36,0.14)' }}>
+                  <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#B45309' }}>Priority Fix Sequence</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                    {aiRoadmap.tootieServiceFit.priorityFixSequence.slice(0, 4).map((item, i) => (
+                      <div key={i} className="text-xs leading-relaxed p-2 rounded-lg" style={{ background: 'rgba(255,255,255,0.03)', color: '#9090B0' }}>
+                        <span style={{ color: '#FBBF24', fontWeight: 700 }}>0{i + 1}.</span> {item}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
+              {(aiRoadmap.tootieServiceFit?.leadQualificationSignals?.length || aiRoadmap.tootieServiceFit?.suggestedNextStep) ? (
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {aiRoadmap.tootieServiceFit?.leadQualificationSignals?.length ? (
+                    <div className="p-4 rounded-xl" style={{ background: 'rgba(34,197,94,0.05)', border: '1px solid rgba(34,197,94,0.14)' }}>
+                      <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#16A34A' }}>Lead Qualification Signals</p>
+                      <ul className="space-y-2">
+                        {aiRoadmap.tootieServiceFit.leadQualificationSignals.slice(0, 4).map((item, i) => (
+                          <li key={i} className="flex items-start gap-2 text-xs leading-relaxed">
+                            <span style={{ color: '#4ADE80', marginTop: 2 }}>✓</span>
+                            <span style={{ color: '#9090B0' }}>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                  {aiRoadmap.tootieServiceFit?.suggestedNextStep ? (
+                    <div className="p-4 rounded-xl" style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.14)' }}>
+                      <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#6366F1' }}>Suggested Next Step</p>
+                      <p className="text-xs leading-relaxed" style={{ color: '#9090B0' }}>{aiRoadmap.tootieServiceFit.suggestedNextStep}</p>
+                      {aiRoadmap.tootieServiceFit.budgetSensitivity && (
+                        <p className="text-xs leading-relaxed mt-3" style={{ color: '#45455F' }}>Budget read: {aiRoadmap.tootieServiceFit.budgetSensitivity}</p>
+                      )}
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
+          )}
+
           {/* CRO dimension bars */}
           <div className="card p-6">
             <div className="flex items-center justify-between mb-5">
