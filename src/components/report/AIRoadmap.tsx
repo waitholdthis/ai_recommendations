@@ -5,17 +5,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { AIRoadmap, AIOpportunity } from '@/lib/types';
 import { ImpactBadge } from '@/components/ImpactBadge';
 
-interface AIRoadmapSectionProps {
-  roadmap: AIRoadmap;
-}
+const PHASE_CONFIG = [
+  { num: 1, color: '#22C55E', border: 'rgba(34,197,94,0.25)',  bg: 'rgba(34,197,94,0.06)',  dot: '#22C55E', label: 'Quick Wins' },
+  { num: 2, color: '#818CF8', border: 'rgba(99,102,241,0.25)', bg: 'rgba(99,102,241,0.06)', dot: '#818CF8', label: 'Strategic' },
+  { num: 3, color: '#C084FC', border: 'rgba(192,132,252,0.25)',bg: 'rgba(192,132,252,0.06)',dot: '#C084FC', label: 'Transform' },
+] as const;
 
-const PHASE_COLORS = {
-  0: { border: 'border-emerald-500/20', bg: 'bg-emerald-500/5', badge: 'text-emerald-400', dot: 'bg-emerald-500' },
-  1: { border: 'border-indigo-500/20', bg: 'bg-indigo-500/5', badge: 'text-indigo-400', dot: 'bg-indigo-500' },
-  2: { border: 'border-purple-500/20', bg: 'bg-purple-500/5', badge: 'text-purple-400', dot: 'bg-purple-500' },
-} as const;
-
-const CATEGORY_ICONS: Record<string, string> = {
+const CAT_ICONS: Record<string, string> = {
   'Customer Support': '💬',
   'Sales & Lead Gen': '📈',
   Marketing: '📣',
@@ -26,174 +22,188 @@ const CATEGORY_ICONS: Record<string, string> = {
   Automation: '🤖',
 };
 
-export function AIRoadmapSection({ roadmap }: AIRoadmapSectionProps) {
+export function AIRoadmapSection({ roadmap }: { roadmap: AIRoadmap }) {
+  const [activePhase, setActivePhase] = useState(0);
   const phases = [roadmap.phase1, roadmap.phase2, roadmap.phase3];
+  const cfg = PHASE_CONFIG[activePhase];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
+
       {/* Summary banner */}
-      <div className="bg-gradient-to-br from-primary/10 to-accent/5 border border-primary/20 rounded-2xl p-6">
-        <div className="flex items-start justify-between gap-4 flex-wrap">
-          <div className="flex-1">
-            <h2 className="text-lg font-bold text-text-primary mb-2">AI Solutions Roadmap</h2>
-            <p className="text-sm text-text-secondary leading-relaxed">{roadmap.executiveSummary}</p>
+      <div className="card p-6" style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(167,139,250,0.04))' }}>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#45455F' }}>AI Solutions Roadmap</p>
+            <p className="text-sm leading-relaxed max-w-2xl" style={{ color: '#9090B0' }}>{roadmap.executiveSummary}</p>
+            <div className="mt-4 p-4 rounded-xl" style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)' }}>
+              <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#45455F' }}>Top Recommendation</p>
+              <p className="text-sm font-medium" style={{ color: '#EDEDFA' }}>{roadmap.topRecommendation}</p>
+            </div>
           </div>
-          <div className="flex-shrink-0 text-center bg-primary/10 border border-primary/20 rounded-xl px-5 py-3">
-            <p className="text-xs text-text-muted mb-1">Total Est. ROI</p>
-            <p className="text-xl font-bold gradient-text">{roadmap.totalEstimatedROI}</p>
-          </div>
-        </div>
-        <div className="mt-4 p-3 bg-primary/5 rounded-xl">
-          <p className="text-xs text-text-muted mb-0.5">Top Recommendation</p>
-          <p className="text-sm text-text-primary">{roadmap.topRecommendation}</p>
+          {roadmap.totalEstimatedROI && (
+            <div className="flex-shrink-0 text-center p-5 rounded-2xl"
+              style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)', minWidth: 140 }}>
+              <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#45455F' }}>Total Est. ROI</p>
+              <p className="text-2xl font-black tracking-tight gradient-text-primary">{roadmap.totalEstimatedROI}</p>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Phases */}
-      {phases.map((phase, phaseIdx) => {
-        const colors = PHASE_COLORS[phaseIdx as 0 | 1 | 2];
-        return (
-          <div key={phaseIdx} className={`border ${colors.border} ${colors.bg} rounded-2xl p-6`}>
-            <div className="flex items-center gap-3 mb-6">
-              <div className={`w-2.5 h-2.5 rounded-full ${colors.dot}`} />
-              <div>
-                <span className={`text-xs font-medium uppercase tracking-wider ${colors.badge}`}>
-                  Phase {phaseIdx + 1} — {phase.duration}
+      {/* Phase selector */}
+      <div className="grid grid-cols-3 gap-3">
+        {PHASE_CONFIG.map((pc, i) => {
+          const phase = phases[i];
+          const active = activePhase === i;
+          return (
+            <button key={i} onClick={() => setActivePhase(i)}
+              className="p-4 rounded-2xl text-left transition-all duration-200"
+              style={{
+                background: active ? pc.bg : 'rgba(255,255,255,0.01)',
+                border: `1px solid ${active ? pc.border : 'rgba(255,255,255,0.06)'}`,
+                transform: active ? 'translateY(-1px)' : 'none',
+              }}>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full" style={{ background: pc.color }} />
+                  <span className="text-xs font-semibold" style={{ color: pc.color }}>Phase {pc.num}</span>
+                </div>
+                <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.04)', color: '#45455F' }}>
+                  {phase?.duration}
                 </span>
-                <h3 className="text-base font-bold text-text-primary">{phase.title}</h3>
               </div>
-              <span className="ml-auto text-xs text-text-muted bg-surface border border-border rounded-full px-2.5 py-1">
-                {phase.opportunities.length} opportunities
-              </span>
-            </div>
+              <p className="text-sm font-semibold mb-1" style={{ color: active ? '#EDEDFA' : '#9090B0' }}>{phase?.title}</p>
+              <p className="text-xs" style={{ color: '#45455F' }}>{phase?.opportunities?.length ?? 0} opportunities</p>
+            </button>
+          );
+        })}
+      </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {phase.opportunities.map((opp) => (
-                <OpportunityCard key={opp.id} opportunity={opp} phaseIdx={phaseIdx} />
-              ))}
-            </div>
+      {/* Opportunities */}
+      <AnimatePresence mode="wait">
+        <motion.div key={activePhase}
+          initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.2 }}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+            {(phases[activePhase]?.opportunities ?? []).map((opp, i) => (
+              <OpportunityCard key={opp.id} opp={opp} index={i} phaseColor={cfg.color} />
+            ))}
           </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function OpportunityCard({
-  opportunity: opp,
-  phaseIdx,
-}: {
-  opportunity: AIOpportunity;
-  phaseIdx: number;
-}) {
-  const [expanded, setExpanded] = useState(false);
-  const icon = CATEGORY_ICONS[opp.category] || '🔧';
-
-  return (
-    <div className="bg-surface border border-border rounded-xl overflow-hidden card-hover">
-      <button
-        className="w-full text-left p-4"
-        onClick={() => setExpanded(!expanded)}
-      >
-        <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-xl bg-surface-2 flex items-center justify-center text-lg flex-shrink-0">
-            {icon}
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap items-center gap-2 mb-1">
-              <ImpactBadge label={opp.priority} variant="priority" />
-              <span className="text-xs text-text-muted">{opp.category}</span>
-            </div>
-            <h4 className="text-sm font-semibold text-text-primary leading-snug">{opp.title}</h4>
-            {!expanded && (
-              <p className="text-xs text-text-muted mt-1 line-clamp-2">{opp.description}</p>
-            )}
-          </div>
-          <span className="text-text-muted text-sm flex-shrink-0">{expanded ? '▲' : '▼'}</span>
-        </div>
-      </button>
-
-      <AnimatePresence>
-        {expanded && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            <div className="px-4 pb-4 border-t border-border pt-4 space-y-4">
-              <p className="text-sm text-text-secondary">{opp.description}</p>
-
-              <div className="grid grid-cols-3 gap-3">
-                <MetricBox label="Est. ROI" value={opp.estimatedROI} valueClass="text-success" />
-                <MetricBox label="Timeline" value={opp.timeToImplement} valueClass="text-accent" />
-                <div>
-                  <p className="text-xs text-text-muted mb-1">Complexity</p>
-                  <ImpactBadge label={opp.complexity} variant="complexity" />
-                </div>
-              </div>
-
-              <div>
-                <p className="text-xs text-text-muted uppercase tracking-wider mb-2">Business Impact</p>
-                <p className="text-sm text-text-secondary">{opp.businessImpact}</p>
-              </div>
-
-              <div className="bg-surface-2 rounded-xl p-3">
-                <p className="text-xs text-text-muted uppercase tracking-wider mb-2">Implementation</p>
-                <p className="text-sm text-text-secondary">{opp.implementationApproach}</p>
-              </div>
-
-              {opp.tools.length > 0 && (
-                <div>
-                  <p className="text-xs text-text-muted uppercase tracking-wider mb-2">Recommended Tools</p>
-                  <div className="flex flex-wrap gap-2">
-                    {opp.tools.map((tool) => (
-                      <span
-                        key={tool}
-                        className="text-xs bg-primary/10 border border-primary/20 text-primary px-2.5 py-1 rounded-full"
-                      >
-                        {tool}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {opp.successMetrics.length > 0 && (
-                <div>
-                  <p className="text-xs text-text-muted uppercase tracking-wider mb-2">Success Metrics</p>
-                  <ul className="space-y-1">
-                    {opp.successMetrics.map((metric, i) => (
-                      <li key={i} className="flex items-start gap-2 text-xs text-text-secondary">
-                        <span className="text-success mt-0.5">✓</span>
-                        {metric}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          </motion.div>
-        )}
+        </motion.div>
       </AnimatePresence>
     </div>
   );
 }
 
-function MetricBox({
-  label,
-  value,
-  valueClass,
-}: {
-  label: string;
-  value: string;
-  valueClass: string;
-}) {
+function OpportunityCard({ opp, index, phaseColor }: { opp: AIOpportunity; index: number; phaseColor: string }) {
+  const [open, setOpen] = useState(false);
+  const icon = CAT_ICONS[opp.category] ?? '🔧';
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }}
+      className="rounded-2xl overflow-hidden"
+      style={{
+        background: open ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.01)',
+        border: open ? '1px solid rgba(99,102,241,0.2)' : '1px solid rgba(255,255,255,0.06)',
+        transition: 'border-color 0.2s, background 0.2s',
+      }}>
+
+      <button className="w-full text-left p-4" onClick={() => setOpen(!open)}>
+        <div className="flex items-start gap-3">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
+            {icon}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
+              <ImpactBadge label={opp.priority} variant="priority" />
+              <span className="text-xs" style={{ color: '#45455F' }}>{opp.category}</span>
+            </div>
+            <h4 className="text-sm font-semibold leading-snug" style={{ color: '#EDEDFA' }}>{opp.title}</h4>
+            {!open && <p className="text-xs mt-1 line-clamp-2" style={{ color: '#45455F' }}>{opp.description}</p>}
+          </div>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#45455F" strokeWidth="2" className="flex-shrink-0 mt-1"
+            style={{ transform: open ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s' }}>
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+        </div>
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
+            <div className="px-4 pb-5" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+              <div className="pt-4 space-y-4">
+
+                <p className="text-sm leading-relaxed" style={{ color: '#9090B0' }}>{opp.description}</p>
+
+                {/* Stats row */}
+                <div className="grid grid-cols-3 gap-3">
+                  <StatBox label="Est. ROI" value={opp.estimatedROI} color="#22C55E" />
+                  <StatBox label="Timeline" value={opp.timeToImplement} color="#818CF8" />
+                  <div>
+                    <p className="text-xs mb-1.5" style={{ color: '#45455F' }}>Complexity</p>
+                    <ImpactBadge label={opp.complexity} variant="complexity" />
+                  </div>
+                </div>
+
+                {/* Impact */}
+                <div className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#45455F' }}>Business Impact</p>
+                  <p className="text-sm leading-relaxed" style={{ color: '#9090B0' }}>{opp.businessImpact}</p>
+                </div>
+
+                {/* Implementation */}
+                <div className="p-3 rounded-xl" style={{ background: 'rgba(99,102,241,0.05)', border: '1px solid rgba(99,102,241,0.12)' }}>
+                  <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6366F1' }}>How to implement</p>
+                  <p className="text-sm leading-relaxed" style={{ color: '#9090B0' }}>{opp.implementationApproach}</p>
+                </div>
+
+                {/* Tools */}
+                {opp.tools.length > 0 && (
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#45455F' }}>Recommended Tools</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {opp.tools.map(t => (
+                        <span key={t} className="text-xs px-2.5 py-1 rounded-lg font-medium"
+                          style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)', color: '#818CF8' }}>
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Metrics */}
+                {opp.successMetrics.length > 0 && (
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#45455F' }}>Success Metrics</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                      {opp.successMetrics.map((m, i) => (
+                        <div key={i} className="flex items-start gap-2 text-xs">
+                          <span className="flex-shrink-0 mt-0.5" style={{ color: '#22C55E' }}>✓</span>
+                          <span style={{ color: '#9090B0' }}>{m}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
+function StatBox({ label, value, color }: { label: string; value: string; color: string }) {
   return (
     <div>
-      <p className="text-xs text-text-muted mb-1">{label}</p>
-      <p className={`text-sm font-semibold ${valueClass}`}>{value}</p>
+      <p className="text-xs mb-1.5" style={{ color: '#45455F' }}>{label}</p>
+      <p className="text-sm font-bold" style={{ color }}>{value}</p>
     </div>
   );
 }

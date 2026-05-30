@@ -3,91 +3,101 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import type { AnalysisReport } from '@/lib/types';
-import { formatUrl, scoreToColor, scoreToLabel } from '@/lib/utils';
+import { formatUrl } from '@/lib/utils';
+import { scoreColor } from '@/components/ScoreGauge';
 import { ExecutiveSummary } from './ExecutiveSummary';
 import { CROAuditSection } from './CROAudit';
 import { AIRoadmapSection } from './AIRoadmap';
 
 type Tab = 'summary' | 'cro' | 'roadmap';
 
-interface ReportViewerProps {
-  report: AnalysisReport;
-  onReset: () => void;
+const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
+  {
+    id: 'summary',
+    label: 'Overview',
+    icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>,
+  },
+  {
+    id: 'cro',
+    label: 'CRO Audit',
+    icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>,
+  },
+  {
+    id: 'roadmap',
+    label: 'AI Roadmap',
+    icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>,
+  },
+];
+
+function ScorePill({ label, score }: { label: string; score: number }) {
+  const color = scoreColor(score);
+  return (
+    <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl"
+      style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+      <span className="text-xs" style={{ color: '#45455F' }}>{label}</span>
+      <div className="flex items-baseline gap-0.5">
+        <span className="text-sm font-bold tabular-nums" style={{ color }}>{score}</span>
+        <span className="text-xs" style={{ color: '#45455F' }}>/100</span>
+      </div>
+    </div>
+  );
 }
 
-export function ReportViewer({ report, onReset }: ReportViewerProps) {
-  const [activeTab, setActiveTab] = useState<Tab>('summary');
-
-  const tabs: { id: Tab; label: string; icon: string }[] = [
-    { id: 'summary', label: 'Executive Summary', icon: '📊' },
-    { id: 'cro', label: 'CRO Audit', icon: '👁' },
-    { id: 'roadmap', label: 'AI Roadmap', icon: '🚀' },
-  ];
+export function ReportViewer({ report, onReset }: { report: AnalysisReport; onReset: () => void }) {
+  const [tab, setTab] = useState<Tab>('summary');
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 glass border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center text-sm">
-              ⚡
+    <div className="min-h-screen flex flex-col" style={{ background: '#07070F' }}>
+
+      {/* Sticky header */}
+      <header className="sticky top-0 z-50 glass" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+
+          {/* Top row */}
+          <div className="flex items-center justify-between py-3 gap-4">
+            <div className="flex items-center gap-3 min-w-0">
+              {/* Back */}
+              <button onClick={onReset} className="btn-ghost flex items-center gap-1.5 text-xs px-3 py-1.5 flex-shrink-0">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m15 18-6-6 6-6"/></svg>
+                New
+              </button>
+              <div className="w-px h-4 flex-shrink-0" style={{ background: 'rgba(255,255,255,0.08)' }} />
+              <div className="min-w-0">
+                <h1 className="text-sm font-semibold truncate" style={{ color: '#EDEDFA' }}>{report.businessName}</h1>
+                <a href={report.url} target="_blank" rel="noopener noreferrer"
+                  className="text-xs truncate flex items-center gap-1 hover:underline"
+                  style={{ color: '#45455F' }}>
+                  {formatUrl(report.url)}
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </a>
+              </div>
             </div>
-            <div>
-              <h1 className="text-sm font-semibold text-text-primary">{report.businessName}</h1>
-              <p className="text-xs text-text-muted">{formatUrl(report.url)}</p>
+
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <ScorePill label="CRO" score={report.croAudit.overallScore} />
+              <ScorePill label="AI Readiness" score={report.classification.aiReadinessScore} />
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium"
+                style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)', color: '#818CF8' }}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                {new Date(report.analyzedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* Overall score */}
-            <div className="hidden sm:flex items-center gap-2 bg-surface border border-border rounded-xl px-3 py-2">
-              <span className="text-xs text-text-muted">CRO Score</span>
-              <span
-                className="text-sm font-bold"
-                style={{ color: scoreToColor(report.croAudit.overallScore) }}
-              >
-                {report.croAudit.overallScore}
-              </span>
-            </div>
-            <div className="hidden sm:flex items-center gap-2 bg-surface border border-border rounded-xl px-3 py-2">
-              <span className="text-xs text-text-muted">AI Readiness</span>
-              <span
-                className="text-sm font-bold"
-                style={{ color: scoreToColor(report.classification.aiReadinessScore) }}
-              >
-                {report.classification.aiReadinessScore}
-              </span>
-            </div>
-            <button
-              onClick={onReset}
-              className="text-xs bg-surface hover:bg-surface-2 border border-border text-text-secondary hover:text-text-primary px-3 py-2 rounded-xl transition-colors"
-            >
-              New Analysis
-            </button>
-          </div>
-        </div>
-
-        {/* Tab bar */}
-        <div className="max-w-7xl mx-auto px-4 pb-0">
-          <div className="flex gap-1">
-            {tabs.map((tab) => (
+          {/* Tab bar */}
+          <div className="flex gap-1 -mb-px">
+            {TABS.map((t) => (
               <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`relative flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors rounded-t-lg ${
-                  activeTab === tab.id
-                    ? 'text-primary'
-                    : 'text-text-muted hover:text-text-secondary'
-                }`}
+                key={t.id}
+                onClick={() => setTab(t.id)}
+                className="relative flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors rounded-t-xl"
+                style={{ color: tab === t.id ? '#818CF8' : '#45455F' }}
               >
-                <span>{tab.icon}</span>
-                <span>{tab.label}</span>
-                {activeTab === tab.id && (
-                  <motion.div
-                    layoutId="tab-indicator"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full"
-                  />
+                <span style={{ opacity: tab === t.id ? 1 : 0.7 }}>{t.icon}</span>
+                {t.label}
+                {tab === t.id && (
+                  <motion.div layoutId="tab-line" className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full"
+                    style={{ background: 'linear-gradient(90deg, #6366F1, #A78BFA)' }} />
                 )}
               </button>
             ))}
@@ -95,21 +105,14 @@ export function ReportViewer({ report, onReset }: ReportViewerProps) {
         </div>
       </header>
 
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <motion.div
-          key={activeTab}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          {activeTab === 'summary' && (
-            <ExecutiveSummary report={report} onTabChange={setActiveTab} />
-          )}
-          {activeTab === 'cro' && <CROAuditSection audit={report.croAudit} />}
-          {activeTab === 'roadmap' && <AIRoadmapSection roadmap={report.aiRoadmap} />}
+      {/* Page body */}
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8">
+        <motion.div key={tab} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
+          {tab === 'summary' && <ExecutiveSummary report={report} onTabChange={setTab} />}
+          {tab === 'cro'     && <CROAuditSection audit={report.croAudit} />}
+          {tab === 'roadmap' && <AIRoadmapSection roadmap={report.aiRoadmap} />}
         </motion.div>
-      </div>
+      </main>
     </div>
   );
 }

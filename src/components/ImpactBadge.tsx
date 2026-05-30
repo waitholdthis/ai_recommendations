@@ -1,60 +1,44 @@
 import { cn } from '@/lib/utils';
 
-interface ImpactBadgeProps {
-  label: string;
-  variant?: 'severity' | 'impact' | 'effort' | 'priority' | 'complexity';
-  className?: string;
-}
+interface Props { label: string; variant?: 'severity' | 'impact' | 'effort' | 'priority' | 'complexity'; className?: string; }
 
-const severityColors: Record<string, string> = {
-  Critical: 'bg-red-500/15 text-red-400 border-red-500/20',
-  High: 'bg-orange-500/15 text-orange-400 border-orange-500/20',
-  Medium: 'bg-amber-500/15 text-amber-400 border-amber-500/20',
-  Low: 'bg-indigo-500/15 text-indigo-400 border-indigo-500/20',
+const PALETTE: Record<string, Record<string, { bg: string; border: string; color: string }>> = {
+  severity: {
+    Critical: { bg: 'rgba(239,68,68,0.1)',   border: 'rgba(239,68,68,0.25)',   color: '#F87171' },
+    High:     { bg: 'rgba(249,115,22,0.1)',  border: 'rgba(249,115,22,0.25)',  color: '#FB923C' },
+    Medium:   { bg: 'rgba(234,179,8,0.1)',   border: 'rgba(234,179,8,0.25)',   color: '#FACC15' },
+    Low:      { bg: 'rgba(99,102,241,0.1)',  border: 'rgba(99,102,241,0.25)', color: '#818CF8' },
+  },
+  priority: {
+    'Quick Win':     { bg: 'rgba(34,197,94,0.08)',   border: 'rgba(34,197,94,0.2)',   color: '#4ADE80' },
+    Strategic:       { bg: 'rgba(99,102,241,0.1)',   border: 'rgba(99,102,241,0.25)', color: '#818CF8' },
+    Transformative:  { bg: 'rgba(167,139,250,0.1)',  border: 'rgba(167,139,250,0.25)',color: '#C084FC' },
+  },
+  effort: {
+    Low:    { bg: 'rgba(34,197,94,0.08)',  border: 'rgba(34,197,94,0.2)',   color: '#4ADE80' },
+    Medium: { bg: 'rgba(234,179,8,0.08)', border: 'rgba(234,179,8,0.2)',   color: '#FACC15' },
+    High:   { bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.2)',   color: '#F87171' },
+  },
+  impact: {
+    High:   { bg: 'rgba(34,197,94,0.08)',  border: 'rgba(34,197,94,0.2)',   color: '#4ADE80' },
+    Medium: { bg: 'rgba(234,179,8,0.08)', border: 'rgba(234,179,8,0.2)',   color: '#FACC15' },
+    Low:    { bg: 'rgba(144,144,176,0.08)',border: 'rgba(144,144,176,0.2)', color: '#9090B0' },
+  },
+  complexity: {
+    Low:    { bg: 'rgba(34,197,94,0.08)',  border: 'rgba(34,197,94,0.2)',   color: '#4ADE80' },
+    Medium: { bg: 'rgba(234,179,8,0.08)', border: 'rgba(234,179,8,0.2)',   color: '#FACC15' },
+    High:   { bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.2)',   color: '#F87171' },
+  },
 };
 
-const impactColors: Record<string, string> = {
-  High: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20',
-  Medium: 'bg-amber-500/15 text-amber-400 border-amber-500/20',
-  Low: 'bg-slate-500/15 text-slate-400 border-slate-500/20',
-};
+const FALLBACK = { bg: 'rgba(144,144,176,0.08)', border: 'rgba(144,144,176,0.2)', color: '#9090B0' };
 
-const priorityColors: Record<string, string> = {
-  'Quick Win': 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20',
-  Strategic: 'bg-indigo-500/15 text-indigo-400 border-indigo-500/20',
-  Transformative: 'bg-purple-500/15 text-purple-400 border-purple-500/20',
-};
-
-function getColor(variant: string, label: string): string {
-  if (variant === 'severity') return severityColors[label] || 'bg-slate-500/15 text-slate-400 border-slate-500/20';
-  if (variant === 'priority') return priorityColors[label] || 'bg-slate-500/15 text-slate-400 border-slate-500/20';
-  if (variant === 'effort') {
-    const map: Record<string, string> = {
-      Low: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20',
-      Medium: 'bg-amber-500/15 text-amber-400 border-amber-500/20',
-      High: 'bg-red-500/15 text-red-400 border-red-500/20',
-    };
-    return map[label] || 'bg-slate-500/15 text-slate-400 border-slate-500/20';
-  }
-  if (variant === 'complexity') {
-    const map: Record<string, string> = {
-      Low: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20',
-      Medium: 'bg-amber-500/15 text-amber-400 border-amber-500/20',
-      High: 'bg-red-500/15 text-red-400 border-red-500/20',
-    };
-    return map[label] || 'bg-slate-500/15 text-slate-400 border-slate-500/20';
-  }
-  return impactColors[label] || 'bg-slate-500/15 text-slate-400 border-slate-500/20';
-}
-
-export function ImpactBadge({ label, variant = 'impact', className }: ImpactBadgeProps) {
+export function ImpactBadge({ label, variant = 'impact', className }: Props) {
+  const style = PALETTE[variant]?.[label] ?? FALLBACK;
   return (
     <span
-      className={cn(
-        'inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full border',
-        getColor(variant, label),
-        className
-      )}
+      className={cn('inline-flex items-center text-xs font-semibold px-2 py-0.5 rounded-md', className)}
+      style={{ background: style.bg, border: `1px solid ${style.border}`, color: style.color, letterSpacing: '0.02em' }}
     >
       {label}
     </span>

@@ -3,104 +3,87 @@
 import { useState, useRef, FormEvent } from 'react';
 import { motion } from 'framer-motion';
 
-interface URLInputProps {
-  onAnalyze: (url: string) => void;
-}
-
-export function URLInput({ onAnalyze }: URLInputProps) {
+export function URLInput({ onAnalyze }: { onAnalyze: (url: string) => void }) {
   const [url, setUrl] = useState('');
   const [focused, setFocused] = useState(false);
   const [error, setError] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const validate = (value: string): boolean => {
-    const trimmed = value.trim();
-    if (!trimmed) {
-      setError('Please enter a URL');
-      return false;
-    }
-    const normalized = trimmed.startsWith('http') ? trimmed : `https://${trimmed}`;
-    try {
-      new URL(normalized);
-      setError('');
-      return true;
-    } catch {
-      setError('Please enter a valid URL (e.g. example.com)');
-      return false;
-    }
+  const validate = (val: string): boolean => {
+    const t = val.trim();
+    if (!t) { setError('Enter a website URL to analyze'); return false; }
+    try { new URL(t.startsWith('http') ? t : `https://${t}`); setError(''); return true; }
+    catch { setError('Please enter a valid URL (e.g. shopify.com)'); return false; }
   };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (validate(url)) {
-      onAnalyze(url);
-    }
+    if (validate(url)) onAnalyze(url);
   };
 
   return (
     <div className="w-full max-w-2xl mx-auto">
       <form onSubmit={handleSubmit}>
         <motion.div
-          animate={{
-            boxShadow: focused
-              ? '0 0 0 2px rgba(99,102,241,0.5), 0 0 30px rgba(99,102,241,0.15)'
-              : '0 0 0 1px rgba(42,42,58,1)',
+          animate={focused ? {
+            boxShadow: '0 0 0 1px rgba(99,102,241,0.6), 0 0 0 4px rgba(99,102,241,0.12), 0 8px 32px rgba(0,0,0,0.5)'
+          } : {
+            boxShadow: '0 0 0 1px rgba(255,255,255,0.08), 0 4px 24px rgba(0,0,0,0.4)'
           }}
           transition={{ duration: 0.2 }}
-          className="flex items-center bg-surface rounded-2xl overflow-hidden"
+          className="flex items-center rounded-2xl overflow-hidden"
+          style={{ background: 'rgba(13,13,26,0.9)' }}
         >
-          <div className="flex-shrink-0 pl-5 text-text-muted">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.35-4.35" />
+          {/* Globe icon */}
+          <div className="pl-5 flex-shrink-0" style={{ color: focused ? '#6366F1' : '#45455F' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
             </svg>
           </div>
+
           <input
             ref={inputRef}
             type="text"
             value={url}
-            onChange={(e) => {
-              setUrl(e.target.value);
-              if (error) setError('');
-            }}
+            onChange={e => { setUrl(e.target.value); if (error) setError(''); }}
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
             placeholder="Enter any business website URL..."
-            className="flex-1 bg-transparent px-4 py-4 text-text-primary placeholder-text-muted text-base outline-none min-w-0"
+            className="flex-1 bg-transparent px-4 py-4 text-base outline-none min-w-0 font-medium"
+            style={{ color: '#EDEDFA', caretColor: '#6366F1' }}
             autoComplete="off"
             spellCheck={false}
           />
-          <button
-            type="submit"
-            className="flex-shrink-0 m-2 bg-primary hover:bg-primary-hover text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 hover:shadow-glow whitespace-nowrap"
-          >
-            Analyze Site
-          </button>
+
+          <div className="p-2 flex-shrink-0">
+            <button type="submit" className="btn-primary flex items-center gap-2 px-5 py-2.5 text-sm font-semibold">
+              Analyze
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
         </motion.div>
       </form>
 
-      {error && (
-        <motion.p
-          initial={{ opacity: 0, y: -4 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-3 text-sm text-danger text-center"
-        >
-          {error}
-        </motion.p>
-      )}
-
-      <p className="mt-4 text-xs text-text-muted text-center">
-        Works with any public website — stores, agencies, SaaS products, local businesses
-      </p>
+      <AnimatedError error={error} />
     </div>
+  );
+}
+
+function AnimatedError({ error }: { error: string }) {
+  if (!error) return null;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -6 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex items-center gap-2 mt-3 justify-center"
+    >
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2">
+        <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
+      </svg>
+      <span className="text-xs font-medium" style={{ color: '#EF4444' }}>{error}</span>
+    </motion.div>
   );
 }
